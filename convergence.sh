@@ -4,13 +4,36 @@
 
 
 # Activate conda environment
-conda activate maria
+#conda activate maria
 
-# Root directory
-root="/home/l061003/TFM_MariaSantamera/"
+# Function to print help in terminal
+print_help(){
+        echo "convergence.sh"
+        echo "María Santamera Lastras 2023"
+        echo -e "\nusage:convergence.sh <root_folder> <docking_folder>\n"
+	echo -e "\troot_folder : root folder (should contain the GitHub validation set)"
+        echo -e "\tdocking_folder : folder with docking results obtained with Lightdock"
+}
 
-# Files and directories
-directory="${root}lightdock_loop_MSL_results/" #ARGUMENT
+# Argument assignation
+root=$1 #root="/home/l061003/TFM_MariaSantamera/"
+directory=$2 #directory="${root}lightdock_loop_MSL_results/"
+
+
+#Controls help message (print "print_help" function if user writes "-h" or "-help" in terminal)
+if [ "$root" == "-h" ] || [ "$root" == "-help" ] ;then
+        print_help
+        exit
+fi
+
+
+#Control of arguments (show an error message if user doesn't write enough arguments)
+if [ "$#" -ne 2 ]; then
+    echo -e "ERROR: too few arguments\n"
+    print_help
+    exit
+fi
+
 
 list=("5fqd" "5hxb" "6bn7" "6h0f" "6h0g" "6uml" "7lps")
 

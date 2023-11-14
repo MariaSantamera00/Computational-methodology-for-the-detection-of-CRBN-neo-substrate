@@ -9,10 +9,36 @@
         # 100 simulations
 
 # Activate conda environment 
-conda activate maria
+#conda activate maria
 
-# Root directory
-root="/home/l061003/TFM_MariaSantamera/"
+# Function to print help in terminal
+print_help(){
+        echo "ligthdock_template_v2_l.sh"
+        echo "María Santamera Lastras 2023"
+        echo -e "\nusage:ligthdock_template_v2_l.sh <root_folder> <output_folder>\n"
+        echo -e "\troot_folder : root folder (should contain the GitHub files)"
+        echo -e "\toutput_folder : folder in which data and results will be stored"
+}
+
+
+
+# Argument assignation
+root=$1 #root="/home/l061003/TFM_MariaSantamera/"
+docking_files=$2 #results="${root}ligthdock_loop_MSL_results/"
+
+#Controls help message (print "print_help" function if user writes "-h" or "-help" in terminal)
+if [ "$root" == "-h" ] || [ "$root" == "-help" ] ;then
+        print_help
+        exit
+fi
+
+
+#Control of arguments (show an error message if user doesn't write enough arguments)
+if [ "$#" -ne 2 ]; then
+    echo -e "ERROR: too few arguments\n"
+    print_help
+    exit
+fi
 
 
 # Files and directories
@@ -21,13 +47,41 @@ rest_crbn="${root}validation_set/rest_crbn"
 names_pdb_files="${root}validation_set/test.pdbs"
 
 # Results directory
-
-if [ ! -d "${root}lightdock_loop_MSL_results/" ]
-then
-        mkdir "${root}lightdock_loop_MSL_results/"
+if [ "$#" -ne 2 ]; then
+    echo -e "ERROR: too few arguments\n"
+    print_help
+    exit
 fi
 
-docking_files="${root}lightdock_loop_MSL_results"
+
+# Files and directories
+pdb_files="${root}validation_set/input_pdb/"
+rest_crbn="${root}validation_set/rest_crbn"
+names_pdb_files="${root}validation_set/test.pdbs"
+
+# Results directory
+if [ -d "${docking_files}" ]
+then
+        echo "The folder exists"
+        echo "Do you want to delete the previous results and recreate the directory? y/n"
+        read answer
+
+        # The directory will only be deleted and recreated if the user says "yes"
+        case $answer in
+                y)
+                        rm -r ${docking_files}
+                        mkdir ${docking_files}
+                ;;
+                n)
+                        exit
+                ;;
+                *)
+                        echo "You must choose y/n"
+                ;;
+        esac
+else
+        mkdir ${docking_files}
+fi
 
 
 
@@ -69,9 +123,9 @@ do
 		cat ${archivo_dssp} | awk '/^  #/{p=1;next}p' | sed -n "${init},${end}p" | awk 'substr($0, 17, 1) ~ /[TS ]/{print $0}' | awk '{print "L L." substr($0, 14, 1) "." substr($0, 8, 3)}' > temp_${ipdb}.txt
 	
 	#Replace G with Gly (all aminoacids) in the restrictions file
-        if [ -f "${docking_files}/rest_lig_${ipdb}_${count}.txt" ]
+        if [ -f "${docking_files}rest_lig_${ipdb}_${count}.txt" ]
 	then 
-		rm "${docking_files}/rest_lig_${ipdb}_${count}.txt"
+		rm "${docking_files}rest_lig_${ipdb}_${count}.txt"
 	fi
 		
 	while IFS= read -r line
@@ -79,7 +133,7 @@ do
                 aa1=$(echo $line | cut -f2 -d ".")
 		aa3=$(python ${root}bin/transl_python.py "$aa1")
 		echo $line | awk -F "." -v OFS='.' -v var1="$aa1" -v var2="$aa3" '{$2 = ( $2 ==var1 ? var2 : $2 ); print $0}'
-        done < temp_${ipdb}.txt > "${docking_files}/rest_lig_${ipdb}_${count}.txt"
+        done < temp_${ipdb}.txt > "${docking_files}rest_lig_${ipdb}_${count}.txt"
 
 	fi
 
@@ -96,11 +150,11 @@ then
 	do
 		# Directory for docking results
 
-		if [ ! -d "${docking_files}/${ipdb}_${i}" ]
+		if [ ! -d "${docking_files}${ipdb}_${i}" ]
 		then
-        		mkdir "${docking_files}/${ipdb}_${i}"
+        		mkdir "${docking_files}${ipdb}_${i}"
 		fi
-		cd "${docking_files}/${ipdb}_${i}"
+		cd "${docking_files}${ipdb}_${i}"
 		
 		# Copy ligand and receptor files
 		cp "${pdb_files}${ipdb}_target_a_l.pdb" "${ipdb}_target_a_l.pdb"
@@ -118,8 +172,8 @@ then
         		# 100 simulations
 				
 		#Step 0. Join rest files
-		sed -i 's/\.\s*/\./g' "${docking_files}/rest_lig_${ipdb}_${i}.txt"
-		cat $rest_crbn "${docking_files}/rest_lig_${ipdb}_${i}.txt" > rest_file
+		sed -i 's/\.\s*/\./g' "${docking_files}rest_lig_${ipdb}_${i}.txt"
+		cat $rest_crbn "${docking_files}rest_lig_${ipdb}_${i}.txt" > rest_file
 	
 		#Step 1. Setup
 		lightdock3_setup.py --noxt --noh --now -r rest_file ${rec} ${lig}
@@ -139,7 +193,7 @@ then
 		### Create files for Ant-Thony ###
 		for j in $(seq 0 $swarms)
 		  do
-		    echo "cd swarm_${j}; lgd_generate_conformations.py ${docking_files}/${ipdb}_${i}/${rec} ${docking_files}/${ipdb}_${i}/{lig}  gso_100.out 200 > /dev/null 2> /dev/null;" >> generate_lightdock.list;
+		    echo "cd swarm_${j}; lgd_generate_conformations.py ${docking_files}${ipdb}_${i}/${rec} ${docking_files}${ipdb}_${i}/${lig}  gso_100.out 200 > /dev/null 2> /dev/null;" >> generate_lightdock.list;
 		    echo "cd swarm_${j}; lgd_cluster_bsas.py gso_100.out > /dev/null 2> /dev/null;" >> cluster_lightdock.list;
 		
 		  done

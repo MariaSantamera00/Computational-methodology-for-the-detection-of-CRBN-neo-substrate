@@ -5,25 +5,67 @@
 # Script designed to be sent to queue
 
 
-
 # Activate conda environment
-conda activate maria
-
-# Root directory
-root="/home/l061003/TFM_MariaSantamera/"
-pdb_files="/lrlhps/users/l001803/TMP/pdb_structure/" #ARGUMENT
+#conda activate maria
 
 
-# Files and directoriesi
-names_pdb_files="${root}validation_set/test_AF.pdbs"
+# Function to print help in terminal
+print_help(){
+        echo "stat_proteome_filter_v1_q.sh"
+        echo "María Santamera Lastras 2023"
+        echo -e "\nusage:stat_proteome_filter_v1_q.sh <root_folder> <AF_files_folder> <names_AF_files> <output_folder>\n"
+        echo -e "\troot_folder : root folder (should contain the GitHub validation set)"
+        echo -e "\tAF_files_folder : folder in which AlphaFold files are stored"
+	echo -e "\tnames_AF_files: file with AlphaFold files names"
+        echo -e "\toutput_folder : folder in which data and results will be stored"
+}
 
-# Results directory
-if [ ! -d "${root}filter1_AF/" ]
-then
-        mkdir "${root}filter1_AF/"
+# Argument assignation
+root=$1 #root="/home/l061003/TFM_MariaSantamera/"
+pdb_files=$2 #pdb_files="/lrlhps/users/l001803/TMP/pdb_structure/" 
+names_pdb_files=$3 #names_pdb_files="${root}validation_set/test_AF.pdbs"
+results=$4 #results="${root}filter1_AF/"
+
+
+#Controls help message (print "print_help" function if user writes "-h" or "-help" in terminal)
+if [ "$root" == "-h" ] || [ "$root" == "-help" ] ;then
+        print_help
+        exit
 fi
 
-results="${root}filter1_AF/"
+
+#Control of arguments (show an error message if user doesn't write enough arguments)
+if [ "$#" -ne 4 ]; then
+    echo -e "ERROR: too few arguments\n"
+    print_help
+    exit
+fi
+
+
+
+# Results directory
+if [ -d "${results}" ]
+then
+        echo "The folder exists"
+        echo "Do you want to delete the previous results and recreate the directory? y/n"
+        read answer
+
+        # The directory will only be deleted and recreated if the user says "yes"
+        case $answer in
+                y)
+                        rm -r ${results}
+                        mkdir ${results}
+                ;;
+                n)
+                        exit
+                ;;
+                *)
+                        echo "You must choose y/n"
+                ;;
+        esac
+else
+        mkdir ${results}
+fi
 
 
 name=$(sed -n "${SGE_TASK_ID}p" $names_pdb_files)

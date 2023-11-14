@@ -6,17 +6,41 @@
 
 
 # Activate conda environment
-conda activate maria
+#conda activate maria
 
 # Function to print help in terminal
+print_help(){
+	echo "alignment_loop_domains_q.sh"
+	echo "María Santamera Lastras 2023"
+	echo -e "\nusage:alignment_loop_domains_q.sh <root_folder> <AF_files_folder> <DPAM_files_folder> <output_folder>\n"
+	echo -e "\troot_folder : root folder (should contain the GitHub validation set)"
+	echo -e "\tAF_files_folder : folder in which AlphaFold files are stored"
+	echo -e "\tDPAM_files_folder : folder in which DPAM files are stored"
+	echo -e "\toutput_folder : folder in which data and results will be stored"
+}
 
 
 
+# Argument assignation 
+root=$1 #root="/home/l061003/TFM_MariaSantamera/"
+alphafold_files=$2 #alphafold_files="/lrlhps/users/l001803/TMP/pdb_structure/"
+dpam_files=$3 #dpam_files="/home/l061003/Documents/DPAM/HomSa/" #ARGUMENT
+results=$4 #results="${root}alignment_AF_domains/"
 
-# Root directory
-root="/home/l061003/TFM_MariaSantamera/"
-alphafold_files="/lrlhps/users/l001803/TMP/pdb_structure/" #ARGUMENT
-dpam_files="/home/l061003/Documents/DPAM/HomSa/" #ARGUMENT
+#Controls help message (print "print_help" function if user writes "-h" or "-help" in terminal)
+if [ "$root" == "-h" ] || [ "$root" == "-help" ] ;then
+        print_help
+        exit
+fi
+
+
+#Control of arguments (show an error message if user doesn't write enough arguments)
+if [ "$#" -ne 4 ]; then
+    echo -e "ERROR: too few arguments\n"
+    print_help
+    exit
+fi
+
 
 
 # Files and directoriesi
@@ -25,12 +49,28 @@ names_pdb_files="${root}validation_set/test.pdbs"
 names_alphafold_files="${root}validation_set/test_AF.pdbs"
 
 # Results directory
-if [ ! -d "${root}alignment_AF_domains/" ]
+if [ -d "${results}" ]
 then
-        mkdir "${root}alignment_AF_domains/"
+        echo "The folder exists"
+	echo "Do you want to delete the previous results and recreate the directory? y/n"
+	read answer
+	
+	# The directory will only be deleted and recreated if the user says "yes"
+  	case $answer in
+    		y)
+      			rm -r ${results}
+      			mkdir ${results}
+    		;;
+    		n)
+      			exit
+    		;;
+    		*)
+      			echo "You must choose y/n"
+    		;;
+  	esac
+else
+	mkdir ${results}
 fi
-
-results="${root}alignment_AF_domains/"
 
 
 #Ligand (target) and receptor (CRBN)

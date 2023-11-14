@@ -6,10 +6,38 @@
 
 
 # Activate conda environment
-conda activate maria
+#conda activate maria
 
-# Root directory
-root="/home/l061003/TFM_MariaSantamera/"
+
+# Function to print help in terminal
+print_help(){
+        echo "frodock_template_l.sh"
+        echo "María Santamera Lastras 2023"
+        echo -e "\nusage:frodock_template_l.sh <root_folder> <output_folder>\n"
+        echo -e "\troot_folder : root folder (should contain the GitHub files)"
+        echo -e "\toutput_folder : folder in which data and results will be stored"
+}
+
+
+
+# Argument assignation
+root=$1 #root="/home/l061003/TFM_MariaSantamera/"
+docking_files=$2 #results="${root}frodock_loop_MSL_results/"
+
+#Controls help message (print "print_help" function if user writes "-h" or "-help" in terminal)
+if [ "$root" == "-h" ] || [ "$root" == "-help" ] ;then
+        print_help
+        exit
+fi
+
+
+#Control of arguments (show an error message if user doesn't write enough arguments)
+if [ "$#" -ne 2 ]; then
+    echo -e "ERROR: too few arguments\n"
+    print_help
+    exit
+fi
+
 
 # Files and directories
 pdb_files="${root}validation_set/input_pdb/"
@@ -17,12 +45,28 @@ names_pdb_files="${root}validation_set/test.pdbs"
 
 
 # Results directory
-if [ ! -d "${root}frodock_loop_MSL_results/" ]
+if [ -d "${docking_files}" ]
 then
-        mkdir "${root}frodock_loop_MSL_results/"
-fi
+        echo "The folder exists"
+        echo "Do you want to delete the previous results and recreate the directory? y/n"
+        read answer
 
-docking_files="${root}frodock_loop_MSL_results"
+        # The directory will only be deleted and recreated if the user says "yes"
+        case $answer in
+                y)
+                        rm -r ${docking_files}
+                        mkdir ${docking_files}
+                ;;
+                n)
+                        exit
+                ;;
+                *)
+                        echo "You must choose y/n"
+                ;;
+        esac
+else
+        mkdir ${docking_files}
+fi
 
 
 list=("5fqd" "5hxb" "6bn7" "6h0f" "6h0g" "6uml" "7lps")
@@ -36,12 +80,12 @@ receptor="${pdb_files}${pdb}_crbn_r.pdb"
 
 
 
-if [ ! -d "${docking_files}/${pdb}" ]
+if [ ! -d "${docking_files}${pdb}" ]
 then
-        mkdir "${docking_files}/${pdb}"
+        mkdir "${docking_files}${pdb}"
 fi
 
-cd "${docking_files}/${pdb}"
+cd "${docking_files}${pdb}"
 
 cp ~/.conda/envs/maria/bin/frodock3_linux64/bin/soap.bin soap.bin
 

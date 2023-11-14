@@ -3,7 +3,7 @@
 ## Script function: Automatic RMSD calculation for the complexes obtained with LightDock
 
 # Activate conda environment
-conda activate maria
+#conda activate maria
 
 # Root directory
 root="/home/l061003/TFM_MariaSantamera/"

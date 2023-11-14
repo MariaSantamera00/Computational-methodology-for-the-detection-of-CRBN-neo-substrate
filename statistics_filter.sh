@@ -7,7 +7,15 @@ conda activate maria
 
 # Root directory
 root="/home/l061003/TFM_MariaSantamera/"
-filter_results_dir="" #ARGUMENT
+
+# Results directory
+filter_results_dir="${root}statistic_filter"
+if [ ! -d "${filter_results_dir}" ]
+then
+        mkdir "${filter_results_dir}"
+fi
+
+
 
 # Create a single file with the names of filter proteins
 cd ${filter_results_dir}

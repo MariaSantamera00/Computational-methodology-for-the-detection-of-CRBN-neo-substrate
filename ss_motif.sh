@@ -3,7 +3,8 @@
 ## This script searches for the binding motif of the target to the CRBN pocket (beta-hairpin loop) and generates a ligand rest file that can be used in other experiments (such as docking with Lightdock).
 
 # Activate conda environment
-conda activate maria
+#conda activate maria
+
 
 # Root directory
 root="/home/l061003/TFM_MariaSantamera/"
