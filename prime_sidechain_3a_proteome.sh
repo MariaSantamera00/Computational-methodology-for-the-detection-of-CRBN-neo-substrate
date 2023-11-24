@@ -1,11 +1,77 @@
 #!/bin/bash
 
-module load schrodinger/2022.3
+## This script generates the necessary input to run Schrodinger's Prime and executes the program. It also allows to get the input for the dfe program (the configuration file).
 
-output_dir="/lrlhps/users/l001803/TMP/crbn_eval/results/"
-input_dir="/lrlhps/users/l001803/TMP/prot_al/"
-names_pdb_files="/lrlhps/users/l001803/TMP/test_filter_go.txt"
-loop_dir="/lrlhps/users/l001803/TMP/loops_al/"
+# Script designed to be sent to queue
+
+
+
+# Load Schrodinger
+#module load schrodinger/2022.3
+
+# Activate conda environment
+#conda activate maria
+
+# Function to print help in terminal
+print_help(){
+        echo "prime_sidechain_3a_proteome_q.sh"
+        echo "María Santamera Lastras 2023"
+        echo -e "\nusage:prime_sidechain_3a_proteome_q.sh <root_folder> <AF_files_folder> <Input_AF_files_names> <output_folder> <loops_folder>\n"
+        echo -e "\troot_folder : root folder (should contain the GitHub validation set)"
+        echo -e "\tAF_files_folder : folder in which AlphaFold files are stored"
+        echo -e "\tInput_AF_files_names : file with the file names to be used to generate the output file"
+        echo -e "\toutput_folder : folder in which data and results will be stored"
+        echo -e "\tloops_folder : folder in which AlphaFold files loops ares stored"
+}
+
+
+
+# Arguments assignation
+root=$1 #root="/home/l061003/"
+input_dir=$2 #input_dir="/lrlhps/users/l001803/TMP/prot_al/"
+names_pdb_files=$3 #names_pdb_files="/lrlhps/users/l001803/TMP/test_filter_go.txt"
+output_dir=$4 #output_dir="/lrlhps/users/l001803/TMP/crbn_eval/results/"
+loop_dir=$5 #loop_dir="/lrlhps/users/l001803/TMP/loops_al/"
+
+
+#Controls help message (print "print_help" function if user writes "-h" or "-help" in terminal)
+if [ "$root" == "-h" ] || [ "$root" == "-help" ] ;then
+        print_help
+        exit
+fi
+
+#Control of arguments (show an error message if user doesn't write enough arguments)
+if [ "$#" -ne 5 ]; then
+    echo -e "ERROR: too few arguments\n"
+    print_help
+    exit
+fi
+
+# Results directory
+if [ -d "${output_dir}" ]
+then
+        echo "The folder exists"
+        echo "Do you want to delete the previous results and recreate the directory? y/n"
+        read answer
+
+        # The directory will only be deleted and recreated if the user says "yes"
+        case $answer in
+                y)
+                        rm -r ${output_dir}
+                        mkdir ${output_dir}
+                ;;
+                n)
+                        exit
+                ;;
+                *)
+                        echo "You must choose y/n"
+                ;;
+        esac
+else
+        mkdir ${output_dir}
+fi
+
+
 
 dir=$(pwd)
 
@@ -18,7 +84,7 @@ do
 ap=$(sed -n "${num}p" $names_pdb_files)
 iap=$(basename "$ap" | cut -f 1 -d '.')
 
-crbn_dir="/home/l061003/Documents/pdb_files/pdb_recortado/"
+crbn_dir="${root}validation_set/input_pdb/"
 crbn="5fqd_crbn_r_thalidomide"
 
 
@@ -31,9 +97,9 @@ fi
 
 cd "${output_dir}prep_mae/"
 
-/lrlhps/apps/schrodinger/schrodinger-2023.3/utilities/prepwizard -captermini -fillloops -fillsidechains -disulfides -propka_pH 7.0 -rmsd 0.3 -WAIT "${input_dir}${iap}.pdb" "${output_dir}prep_mae/${iap}.mae" 
+schrodinger/schrodinger-2023.3/utilities/prepwizard -captermini -fillloops -fillsidechains -disulfides -propka_pH 7.0 -rmsd 0.6 -WAIT "${input_dir}${iap}.pdb" "${output_dir}prep_mae/${iap}.mae" 
 
-#/lrlhps/apps/schrodinger/schrodinger-2023.3/utilities/prepwizard -captermini -fillloops -fillsidechains -disulfides -propka_pH 7.0 -rmsd 0.3 -WAIT  "${crbn_dir}${crbn}.pdb" "${output_dir}prep_mae/${crbn}.mae"
+schrodinger/schrodinger-2023.3/utilities/prepwizard -captermini -fillloops -fillsidechains -disulfides -propka_pH 7.0 -rmsd 0.3 -WAIT  "${crbn_dir}${crbn}.pdb" "${output_dir}prep_mae/${crbn}.mae"
 
 cd "${dir}"
 
@@ -45,7 +111,7 @@ then
 fi
 
 
-run /lrlhps/users/l001803/TMP/crbn_eval/merge.py "${output_dir}prep_mae/${crbn}.mae" "${output_dir}prep_mae/${iap}.mae" "${output_dir}merge/${iap}_${crbn}.mae"
+run merge.py "${output_dir}prep_mae/${crbn}.mae" "${output_dir}prep_mae/${iap}.mae" "${output_dir}merge/${iap}_${crbn}.mae"
 
 
 ## CREATE prime_sidechain.inp FILE
@@ -74,8 +140,8 @@ done > "${output_dir}prime_sidechain/bodyr_ps_${iap}${crbn}.inp"
 # Write the body of the file (ligand lines)
 # Convert .mae files to .pdb files
 
-run /lrlhps/apps/schrodinger/schrodinger-2023.3/utilities/pdbconvert -imae "${output_dir}prep_mae/${iap}.mae" -opdb "${output_dir}prep_mae/${iap}_mae.pdb"
-#run /lrlhps/apps/schrodinger/schrodinger-2023.3/utilities/pdbconvert -imae "${output_dir}prep_mae/${crbn}.mae" -opdb "${output_dir}prep_mae/${crbn}_mae.pdb"
+run schrodinger/schrodinger-2023.3/utilities/pdbconvert -imae "${output_dir}prep_mae/${iap}.mae" -opdb "${output_dir}prep_mae/${iap}_mae.pdb"
+run schrodinger/schrodinger-2023.3/utilities/pdbconvert -imae "${output_dir}prep_mae/${crbn}.mae" -opdb "${output_dir}prep_mae/${crbn}_mae.pdb"
 
 # Residues < 3A
 xyz_lig=$(echo "[")
@@ -87,7 +153,7 @@ do
 	xyz_lig=$(echo "${xyz_lig}$(echo "$ligand_line" | awk '($1=="ATOM" || $1=="HETATM"){print "["substr($0, 32, 8)","substr($0, 39, 8)","substr($0, 47, 8)"]"}' | sed 's/ //g')")
 
 done < "${output_dir}prep_mae/${iap}_mae.pdb"
-#done < "${output_dir}prep_mae/${iap}_mae_atom.pdb"
+
 xyz_lig=$(echo "$(echo "${xyz_lig}" | sed 's/]\[/],[/g')]")
 echo "$xyz_lig" > prueba_lig.txt
 
@@ -101,12 +167,12 @@ do
 	xyz_cer=$(echo "${xyz_cer}$(echo "$crbn_line" | awk '($1=="ATOM" || $1=="HETATM"){print "["substr($0, 32, 8)","substr($0, 39, 8)","substr($0, 47, 8)"]"}'| sed 's/ //g')")
 
 done < "${output_dir}prep_mae/${crbn}_mae.pdb"
-#done < "${output_dir}prep_mae/${crbn}_mae_atom.pdb"
+
 xyz_cer=$(echo "$(echo "${xyz_cer}" | sed 's/]\[/],[/g')]")
 echo "$xyz_cer" > prueba_cer.txt
 
 
-~/.conda/envs/maria/bin/python /home/l061003/distances_file.py prueba_lig.txt prueba_cer.txt > "temp_${iap}${crbn}.pdb"
+python ${root}bin/distances_file.py prueba_lig.txt prueba_cer.txt > "temp_${iap}${crbn}.pdb"
 
 rm prueba_lig.txt
 rm prueba_cer.txt
@@ -119,7 +185,7 @@ awk 'NR==FNR { lines[$0]; next } FNR in lines' "temp_${iap}${crbn}.pdb" "${outpu
 
 pdb_id=$(echo "$iap" | cut -f1,2,3,4 -d "_")
 loop="${loop_dir}${pdb_id}_loop_al.pdb"
-cat ${loop} | awk '{print $6}' | sort | uniq > "temp_loop_${iap}${crbn}.pdb"
+cat ${loop} | awk '{print substr($0, 24, 3)}'| sed 's/ //g' | sort | uniq > "temp_loop_${iap}${crbn}.pdb"
 
 
 
@@ -167,7 +233,7 @@ fi
 
 cd "${output_dir}prime_output/"
 
-/lrlhps/apps/schrodinger/schrodinger-2022.3/prime "${output_dir}prime_sidechain/ps_${iap}_${crbn}.inp" -HOST cluster_mpi:50 -NJOBS 8
+schrodinger/schrodinger-2022.3/prime "${output_dir}prime_sidechain/ps_${iap}_${crbn}.inp" -HOST cluster_mpi:50 -NJOBS 8
 
 
 cd "${dir}"
