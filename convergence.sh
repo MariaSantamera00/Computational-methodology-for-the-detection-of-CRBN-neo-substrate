@@ -16,8 +16,8 @@ print_help(){
 }
 
 # Argument assignation
-root=$1 #root="/home/l061003/TFM_MariaSantamera/"
-directory=$2 #directory="${root}lightdock_loop_MSL_results/"
+root=$1 
+directory=$2 
 
 
 #Controls help message (print "print_help" function if user writes "-h" or "-help" in terminal)

@@ -20,9 +20,9 @@ print_help(){
 
 
 # Argument assignation
-root=$1 #root="/home/l061003/TFM_MariaSantamera/"
-alphafold_files=$2 #alphafold_files="/lrlhps/users/l001803/TMP/pdb_structure/"
-results=$3 #results="${root}alignment_AF/"
+root=$1 
+alphafold_files=$2 
+results=$3 
 
 #Controls help message (print "print_help" function if user writes "-h" or "-help" in terminal)
 if [ "$root" == "-h" ] || [ "$root" == "-help" ] ;then

@@ -21,9 +21,9 @@ print_help(){
 
 
 # Argument assignation
-validation_files=$1 #validation_files="/lrlhps/users/l001803/TMP/crbn_eval/results_val/prime_output/"
-root=$2 #root="/home/l061003/"
-results=$3 #results="/lrlhps/users/l001803/TMP/crbn_eval/results/"
+validation_files=$1 
+root=$2 
+results=$3 
 e2_complex="${root}validation_set/ubiq_complex.pdb"
 
 ls ${validation_files} | grep ".maegz" > test_proteins.txt

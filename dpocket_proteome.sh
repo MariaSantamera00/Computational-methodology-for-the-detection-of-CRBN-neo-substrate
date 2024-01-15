@@ -14,9 +14,9 @@ print_help(){
 
 
 # Argument assignation
-alphafold_files=$1 #alphafold_files="/lrlhps/users/l001803/TMP/crbn_eval/results/prime_output/"
-names_pdb_files=$2 #names_pdb_files="/lrlhps/users/l001803/TMP/crbn_eval/results/temp_protein_filter_prime.txt"
-results=$3 #results="/lrlhps/users/l001803/TMP/crbn_eval/results/"
+alphafold_files=$1 
+names_pdb_files=$2 
+results=$3 
 
 
 # Controls help message (print "print_help" function if user writes "-h" or "-help" in terminal)

@@ -2,13 +2,9 @@
 
 module load schrodinger/2022.3
 
-#output_dir="/lrlhps/users/l001803/TMP/crbn_eval/results/"
-#input_dir="/lrlhps/users/l001803/TMP/prot_al/"
-#names_pdb_files="/lrlhps/users/l001803/TMP/test_filter.txt"
-
-output_dir="/lrlhps/users/l001803/TMP/crbn_eval/results_val/"
-input_dir="/home/l061003/Documents/pdb_files/pdb_recortado/"
-names_pdb_files="/home/l061003/Documents/test_cross.pdbs"
+output_dir=""
+input_dir=""
+names_pdb_files=""
 dir=$(pwd)
 
 comb=$(cat ${names_pdb_files} | wc -l)
@@ -22,7 +18,6 @@ ap=$(sed -n "${num}p" $names_pdb_files)
 #iap=$(basename "$ap" | cut -f 1 -d '.')
 iap=$(echo "${ap}" | cut -f2 -d "-" | cut -f1 -d '.')
 
-#crbn="/home/l061003/Documents/pdb_files/pdb_recortado/6h0f_crbn_r_tal.pdb"
 crbn=$(echo "${ap}" | cut -f1 -d "-" | cut -f1 -d '.')
 
 
@@ -35,9 +30,9 @@ fi
 
 cd "${output_dir}prep_mae/"
 
-#/lrlhps/apps/schrodinger/schrodinger-2023.3/utilities/prepwizard -captermini -fillloops -fillsidechains -disulfides -propka_pH 7.0 -rmsd 0.3 -WAIT "${input_dir}${iap}.pdb" "${output_dir}prep_mae/${iap}.mae" 
+#/apps/schrodinger/schrodinger-2023.3/utilities/prepwizard -captermini -fillloops -fillsidechains -disulfides -propka_pH 7.0 -rmsd 0.3 -WAIT "${input_dir}${iap}.pdb" "${output_dir}prep_mae/${iap}.mae" 
 
-#/lrlhps/apps/schrodinger/schrodinger-2023.3/utilities/prepwizard -captermini -fillloops -fillsidechains -disulfides -propka_pH 7.0 -rmsd 0.3 -WAIT  "${input_dir}${crbn}.pdb" "${output_dir}prep_mae/${crbn}.mae"
+#/apps/schrodinger/schrodinger-2023.3/utilities/prepwizard -captermini -fillloops -fillsidechains -disulfides -propka_pH 7.0 -rmsd 0.3 -WAIT  "${input_dir}${crbn}.pdb" "${output_dir}prep_mae/${crbn}.mae"
 
 cd "${dir}"
 
@@ -49,7 +44,7 @@ then
 fi
 
 
-#run /lrlhps/users/l001803/TMP/crbn_eval/merge.py "${output_dir}prep_mae/${crbn}.mae" "${output_dir}prep_mae/${iap}.mae" "${output_dir}merge/${iap}_${crbn}.mae"
+#run merge.py "${output_dir}prep_mae/${crbn}.mae" "${output_dir}prep_mae/${iap}.mae" "${output_dir}merge/${iap}_${crbn}.mae"
 
 
 ## CREATE prime_sidechain.inp FILE
@@ -80,8 +75,8 @@ done > "${output_dir}prime_sidechain/bodyr_ps_${iap}${crbn}.inp"
 # Write the body of the file (ligand lines)
 # Convert .mae files to .pdb files
 
-#run /lrlhps/apps/schrodinger/schrodinger-2023.3/utilities/pdbconvert -imae "${output_dir}prep_mae/${iap}.mae" -opdb "${output_dir}prep_mae/${iap}_mae.pdb"
-#run /lrlhps/apps/schrodinger/schrodinger-2023.3/utilities/pdbconvert -imae "${output_dir}prep_mae/${crbn}.mae" -opdb "${output_dir}prep_mae/${crbn}_mae.pdb"
+#run /apps/schrodinger/schrodinger-2023.3/utilities/pdbconvert -imae "${output_dir}prep_mae/${iap}.mae" -opdb "${output_dir}prep_mae/${iap}_mae.pdb"
+#run /apps/schrodinger/schrodinger-2023.3/utilities/pdbconvert -imae "${output_dir}prep_mae/${crbn}.mae" -opdb "${output_dir}prep_mae/${crbn}_mae.pdb"
 
 # Residues < 3A
 xyz_lig=$(echo "[")
@@ -109,7 +104,7 @@ xyz_cer=$(echo "$(echo "${xyz_cer}" | sed 's/]\[/],[/g')]")
 
 
 
-~/.conda/envs/maria/bin/python /home/l061003/distances_2.py "$xyz_lig" "$xyz_cer" > "temp_${iap}${crbn}.pdb"
+~/.conda/envs/maria/bin/python distances_2.py "$xyz_lig" "$xyz_cer" > "temp_${iap}${crbn}.pdb"
 
 
 awk 'NR==FNR { lines[$0]; next } FNR in lines' "temp_${iap}${crbn}.pdb" "${output_dir}prep_mae/${iap}_mae_atom.pdb" | awk '{print $1}'| sort | uniq > "temp_3a_${iap}${crbn}.pdb"
@@ -175,7 +170,7 @@ fi
 
 cd "${output_dir}prime_output/"
 
-/lrlhps/apps/schrodinger/schrodinger-2022.3/prime "${output_dir}prime_sidechain/ps_${iap}_${crbn}.inp" -HOST cluster_mpi:50 -NJOBS 8
+/apps/schrodinger/schrodinger-2022.3/prime "${output_dir}prime_sidechain/ps_${iap}_${crbn}.inp" -HOST cluster_mpi:50 -NJOBS 8
 
 
 cd "${dir}"
@@ -205,7 +200,7 @@ done
 rm "temp_loop_${iap}${crbn}.pdb"
 
 ## CRETATE CONFIG FILE (METADYNAMICS)
-echo -e "{\"DEFAULT\":\n  {\"pocket_asl\":  \"$(echo "${crbn_line}")\",\n   \"ligand_asl\": \"$(echo "${lig_line::-4}")\",\n   \"wall\": 80.0,\n   \"width\": 0.08,\n   \"height\": 0.02,\n   \"interval\": 0.09,\n   \"time\": 30000.0,\n   \"args\":\n     {\"fl\": 2.9,\n      \"fr\": 4.0,\n      \"fd\": 3.2,\n      \"rd\": null,\n      \"cs\": 1000.0,\n      \"bs\": 0.2,\n      \"im\": \"rectangle\",\n      \"fm\": \"mask_mean\",\n      \"cwp\": false,\n      \"dcf\": 0.02,\n      \"ngt\": 0.05,\n      \"bt\": true},\n    \"correl\":\n      {\"a\": -0.09,\n       \"b\": 0.51}\n  }\n}" > "/home/l061003/dfe/resources/config_run_${iap}_${crbn}.json"
+echo -e "{\"DEFAULT\":\n  {\"pocket_asl\":  \"$(echo "${crbn_line}")\",\n   \"ligand_asl\": \"$(echo "${lig_line::-4}")\",\n   \"wall\": 80.0,\n   \"width\": 0.08,\n   \"height\": 0.02,\n   \"interval\": 0.09,\n   \"time\": 30000.0,\n   \"args\":\n     {\"fl\": 2.9,\n      \"fr\": 4.0,\n      \"fd\": 3.2,\n      \"rd\": null,\n      \"cs\": 1000.0,\n      \"bs\": 0.2,\n      \"im\": \"rectangle\",\n      \"fm\": \"mask_mean\",\n      \"cwp\": false,\n      \"dcf\": 0.02,\n      \"ngt\": 0.05,\n      \"bt\": true},\n    \"correl\":\n      {\"a\": -0.09,\n       \"b\": 0.51}\n  }\n}" > "config_run_${iap}_${crbn}.json"
 
 
 

@@ -3,7 +3,7 @@
 ## This script allows to preprocess pdb files to obtain some of the files in the directory "validation_set". It is neccessary to prepare the files for subsequent steps.
 
 # Root directory
-root="/home/l061003/TFM_MariaSantamera/"
+root=""
 
 
 pdb_files="${root}validation_set/input_pdb"

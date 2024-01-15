@@ -23,7 +23,7 @@ print_help(){
 
 
 # Argument assignation
-root=$1 #root="/home/l061003/TFM_MariaSantamera/"
+root=$1 
 docking_files=$2 #results="${root}ligthdock_loop_MSL_results/"
 
 #Controls help message (print "print_help" function if user writes "-h" or "-help" in terminal)

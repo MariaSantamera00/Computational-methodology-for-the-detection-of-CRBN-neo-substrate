@@ -7,7 +7,7 @@
 
 
 # Root directory
-root="/home/l061003/TFM_MariaSantamera/"
+root=""
 
 # Files and directories
 pdb_files="${root}validation_set/input_pdb/"

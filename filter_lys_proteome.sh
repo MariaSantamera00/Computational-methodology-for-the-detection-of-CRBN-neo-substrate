@@ -21,10 +21,10 @@ print_help(){
 
 
 # Argument assignation
-alphafold_files=$1 #alphafold_files="/lrlhps/users/l001803/TMP/crbn_eval/results/prime_output/"
-names_pdb_files=$2 #names_pdb_files="/lrlhps/users/l001803/TMP/crbn_eval/results/temp_6756_protein_filter_prime.txt"
-root=$3 #root="/home/l061003/"
-results=$4 #results="/lrlhps/users/l001803/TMP/crbn_eval/results/"
+alphafold_files=$1 
+names_pdb_files=$2 
+root=$3 
+results=$4 
 e2_complex="${root}validation_set/ubiq_complex.pdb"
 
 # Controls help message (print "print_help" function if user writes "-h" or "-help" in terminal)

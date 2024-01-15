@@ -18,9 +18,9 @@ print_help(){
 
 
 # Argument assignation
-root=$1 #root="/home/l061003/TFM_MariaSantamera/"
-pdb_file=$2 #pdb_file="${root}validation_set/AF_proteins_examples/AF-Q14191-F1-model_v4.pdb"
-results=$3 #results="${root}graph_results/"
+root=$1 
+pdb_file=$2 
+results=$3 
 
 #Controls help message (print "print_help" function if user writes "-h" or "-help" in terminal)
 if [ "$root" == "-h" ] || [ "$root" == "-help" ] ;then

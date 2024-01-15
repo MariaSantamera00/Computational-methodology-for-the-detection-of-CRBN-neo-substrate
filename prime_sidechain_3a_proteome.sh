@@ -27,11 +27,11 @@ print_help(){
 
 
 # Arguments assignation
-root=$1 #root="/home/l061003/"
-input_dir=$2 #input_dir="/lrlhps/users/l001803/TMP/prot_al/"
-names_pdb_files=$3 #names_pdb_files="/lrlhps/users/l001803/TMP/test_filter_go.txt"
-output_dir=$4 #output_dir="/lrlhps/users/l001803/TMP/crbn_eval/results/"
-loop_dir=$5 #loop_dir="/lrlhps/users/l001803/TMP/loops_al/"
+root=$1 
+input_dir=$2 
+names_pdb_files=$3 
+output_dir=$4 
+loop_dir=$5 
 
 
 #Controls help message (print "print_help" function if user writes "-h" or "-help" in terminal)

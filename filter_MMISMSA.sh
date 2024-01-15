@@ -3,7 +3,7 @@
 # This script filters the total energy results of MMISMSA and allows to obtain a list of the filtered complexes. 
 
 # Change this field depending on the folder where the MMISMSA and prime results are stored.
-dir="/lrlhps/users/l001803/TMP/crbn_eval/results/"
+# dir=""
 
 
 

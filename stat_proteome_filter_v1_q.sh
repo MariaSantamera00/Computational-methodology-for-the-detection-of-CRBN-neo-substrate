@@ -21,8 +21,8 @@ print_help(){
 }
 
 # Argument assignation
-root=$1 #root="/home/l061003/TFM_MariaSantamera/"
-pdb_files=$2 #pdb_files="/lrlhps/users/l001803/TMP/pdb_structure/" 
+root=$1 
+pdb_files=$2  
 names_pdb_files=$3 #names_pdb_files="${root}validation_set/test_AF.pdbs"
 results=$4 #results="${root}filter1_AF/"
 

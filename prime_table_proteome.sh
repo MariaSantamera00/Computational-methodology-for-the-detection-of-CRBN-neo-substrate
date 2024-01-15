@@ -5,9 +5,9 @@
 # Script designed to be sent to queue
 
 # Change this field depending on the folder where the MMISMSA and structural alignment results are stored.
-output_dir="/lrlhps/users/l001803/TMP/crbn_eval/results/"
-input_dir="/lrlhps/users/l001803/TMP/prot_al/"
-names_pdb_files="/lrlhps/users/l001803/TMP/test_filter_go.txt"
+output_dir=""
+input_dir=""
+names_pdb_files=""
 
 
 comb=$(cat ${names_pdb_files} | wc -l)

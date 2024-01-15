@@ -17,8 +17,8 @@ print_help(){
 
 
 # Argument assignation
-root=$1 #root="/home/l061003/TFM_MariaSantamera/"
-output_dir=$2 #output_dir="/lrlhps/users/l001803/TMP/crbn_eval/results_val/"
+root=$1 
+output_dir=$2 
 
 #Controls help message (print "print_help" function if user writes "-h" or "-help" in terminal)
 if [ "$root" == "-h" ] || [ "$root" == "-help" ] ;then

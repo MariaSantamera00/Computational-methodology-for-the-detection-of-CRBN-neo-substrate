@@ -21,8 +21,8 @@ print_help(){
 
 
 # Argument assignation
-root=$1 #root="/home/l061003/TFM_MariaSantamera/"
-docking_files=$2 #results="${root}frodock_loop_MSL_results/"
+root=$1 
+docking_files=$2 
 
 #Controls help message (print "print_help" function if user writes "-h" or "-help" in terminal)
 if [ "$root" == "-h" ] || [ "$root" == "-help" ] ;then

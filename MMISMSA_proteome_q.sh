@@ -24,10 +24,10 @@ print_help(){
 
 
 # Arguments assignation
-root=$1 #root="/home/l061003/"
-dir=$2 # dir="/lrlhps/users/l001803/TMP/crbn_eval/results/prime_output/"
-names_files=$3 #names_files="/lrlhps/users/l001803/TMP/crbn_eval/results/temp_6756_protein_filter_lys.txt"
-output_dir=$4 #output_dir="/lrlhps/users/l001803/TMP/crbn_eval/results/phcal_3/"
+root=$1 
+dir=$2 
+names_files=$3 
+output_dir=$4 
 
 
 #Controls help message (print "print_help" function if user writes "-h" or "-help" in terminal)

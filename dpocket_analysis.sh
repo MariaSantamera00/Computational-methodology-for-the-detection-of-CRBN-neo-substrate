@@ -4,7 +4,7 @@
 
 
 # Root directory 
-root="/lrlhps/users/l001803/TMP/crbn_eval/"
+# root = 
 
 # Files and directories
 dir="${root}results/"

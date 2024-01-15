@@ -1,12 +1,14 @@
 #!/bin/bash
 
 ## This script allows to obtain molecular glues of the aligned pdbs and overlap Phe with the molecular glue of the pdb file. 
+dir=""
+
 
 ## OVERLAP PHE AND MOLECULAR GLUE
 obabel -ipdb Documents/phe.pdb -omol2 -O Documents/phe.mol2 -h
 obabel -ipdb 5fqd_mglue.pdb -omol2 -O 5fqd_mglue.mol2 -h
-/lrlhps/users/l001803/TMP/CROCK.exe -r /home/l061003/Documents/pdb_files/pdb_alineado/5fqd_mglue.mol2 -d /home/l061003/Documents/phe.mol2 -o phe_5fqd
-obabel -imol2 /home/l061003/phe/phe_5fqd.mol2 -opdb -O /home/l061003/phe/phe_5fqd.pdb
+${dir}/CROCK.exe -r ${dir}/5fqd_mglue.mol2 -d ${dir}/phe.mol2 -o phe_5fqd
+obabel -imol2 ${dir}/phe_5fqd.mol2 -opdb -O ${dir}/phe/phe_5fqd.pdb
 
 cat phe_5fqd.pdb | grep "ATOM" | awk '($1=="ATOM") {$0 = substr($0, 1, 21) "R" substr($0,23)} 1' > phe_5fqd_r.pdb
 

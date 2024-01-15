@@ -6,7 +6,7 @@
 conda activate maria
 
 # Root directory
-root="/home/l061003/TFM_MariaSantamera/"
+root=""
 
 # Results directory
 filter_results_dir="${root}statistic_filter"

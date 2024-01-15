@@ -6,11 +6,11 @@
 #conda activate maria
 
 # Root directory
-root="/home/l061003/TFM_MariaSantamera/"
+root=""
 
 # Files and directoriesi
 pdb_files="${root}validation_set/input_pdb/"
-docking_files="/home/l061003/Documents/docking_200/" # ARGUMENT
+docking_files="" # ARGUMENT
 swarm_number=284 #ARGUMENT
 
 list=("5fqd" "5hxb" "6h0f" "6h0g" "6uml" "7lps")
