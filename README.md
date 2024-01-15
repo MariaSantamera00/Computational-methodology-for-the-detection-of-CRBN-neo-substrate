@@ -7,8 +7,8 @@ This is the GitHub repository associated with my master's thesis "Computational 
   <ol>
     <li><a href="#prerequisites">Prerequisites</a></li>
     <li><a href="#preprocessing">Preprocessing</a></li>
-    <li><a href="#scripts">Preprocessing</a></li>
-    <li><a href="#results">Preprocessing</a></li>
+    <li><a href="#scripts">Scripts</a></li>
+    <li><a href="#results">Results</a></li>
   </ol>
 </details>
 
